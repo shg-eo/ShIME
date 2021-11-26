@@ -1,4 +1,4 @@
-﻿; ShIme.ahk Version 0.9.0
+﻿; ShIme.ahk Version 1.0.0
 ; Copyright (c) 2021 SAKUMA, Shigeo 
 ;
 ; Relased under the MIT license
