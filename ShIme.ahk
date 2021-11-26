@@ -184,7 +184,7 @@ WinActivateHandler(hWinEventHook, event, hwnd, idObject, idChild, thread, time) 
         Progress, Off
         ;Tooltip, [あ]
         Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[あ],,p
-        WinSet, TransColor, 000000 %TransParentRate%, p
+        WinSet, TransColor, %TransParentRate%, p
         Sleep, %ShowTime%
         Progress, Off
     }
