@@ -256,6 +256,12 @@ vk1C::
 *~WheelUp::
 *~WheelLeft::
 *~WheelRight::
+    if (ignoreMouse == 1){
+        Return
+    }
+RShift::
+LShift::
+Shift::
 *~a::
 *~b::
 *~c::
@@ -352,9 +358,9 @@ vk1C::
 *~PgUp::
 *~PgDn::
     Progress, Off   ; 表示を消す
-    if (ShowFlag == 1){
-        ShowIMEState(500)
-    }
+    ;if (ShowFlag == 1){
+    ;    ShowIMEState(500)
+    ;}
     ShowFlag := 0
     SetTimer, TimerShow, %WaitToShow%
     Return
