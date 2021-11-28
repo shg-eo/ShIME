@@ -1,4 +1,5 @@
 ﻿; ShIme.ahk Version 1.0.0
+
 ; Copyright (c) 2021 SAKUMA, Shigeo 
 ;
 ; Relased under the MIT license
@@ -140,6 +141,13 @@ ButtonCancel:
 
 Return
 
+ShowDiag(string, x, y, trans){
+    Progress, B Zh0 FM72 FS72 x%x% y%y% w210 CT000000 CWdddddd, %string%, ,p
+    WinSet, Transparent, %trans%, p
+    WinSet, ExStyle, +0x00000020, p
+    Return
+}
+
 SuspendShime:
     if(SuspendState == 0){
         SuspendState := 1
@@ -171,8 +179,7 @@ WinActivateHandler(hWinEventHook, event, hwnd, idObject, idChild, thread, time) 
     if (IME_CHECK("A") ==0)
     { 
         Progress, Off
-        Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[A],,p
-        WinSet, Transparent, %TransParentRate%, p
+        ShowDiag("[_A]", xPos, yPos, TransParentRate)
         Sleep, %ShowTime%
         Progress, Off
     }
@@ -180,8 +187,7 @@ WinActivateHandler(hWinEventHook, event, hwnd, idObject, idChild, thread, time) 
     {
         Progress, Off
         ;Tooltip, [あ]
-        Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[あ],,p
-        WinSet, TransColor, %TransParentRate%, p
+        ShowDiag("[あ]", xPos, yPos, TransParentRate)
         Sleep, %ShowTime%
         Progress, Off
     }
@@ -201,8 +207,8 @@ ShowIMEState(time) {
     { 
         Progress, Off
         ;Tooltip, [A]
-        Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[A],,p
-        WinSet, TransColor, 000000 %TransParentRate%, p
+        
+        ShowDiag("[あ]", xPos, yPos, TransParentRate)
         Sleep, %ShowTime%
         Progress, Off
     }
@@ -210,8 +216,7 @@ ShowIMEState(time) {
     {
         Progress, Off
         ;Tooltip, [あ]
-        Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[あ],,p
-        WinSet, TransColor, 000000 %TransParentRate%, p
+        ShowDiag("[あ]", xPos, yPos, TransParentRate)
         Sleep, %ShowTime%
         Progress, Off
     }
@@ -256,6 +261,7 @@ vk1C::
     if (ignoreMouse == 1){
         Return
     }
+
 RShift::
 LShift::
 Shift::
@@ -374,14 +380,12 @@ TimerShow:
         if (IME_CHECK("A") == 0 )
         { 
             ;Tooltip, [A]
-            Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[A],,p
-            WinSet, TransColor, 000000 %TransParentRate2%, p
+            ShowDiag("[_A]", xPos, yPos, TransParentRate2)
         }
         else
         {
             ;Tooltip, [あ]
-            Progress, B Zh0 FM72 FS72 x%xPos% y%yPos% w210 CT000000 CWdddddd,[あ],,p
-            WinSet, TransColor, 000000 %TransParentRate2%, p
+            ShowDiag("[あ]", xPos, yPos, TransParentRate2)
         }
 
         ShowFlag := 1
