@@ -46,6 +46,8 @@ IniRead, ShowTime, %IniFile%, ShIme, ShowTime, 500
 ; Use "Henkan" and "MuHenkan" keys to change IME state
 IniRead, ChangeHenkan, %IniFile%, ShIme, ChangeHenkan, 1
 
+IniRead, IgnoreMouse, %IniFile%, ShIme, IgnoreMouse, 0
+
 Menu, Tray, NoStandard
 Menu, Tray, Add, %Version%, DoNothing
 Menu, Tray, Add, 設定, Configuration
@@ -83,11 +85,9 @@ Configuration:
     mes1 := "ウィンドウが切り替わった時に表示する透明度"
     Tr := 255 - TransParentRate
     GUI, Add, Text, X%TexX% Y+30 , %mes1%
-
     GUI, Add, Slider, vTr Range0-255 X%LocX%, %Tr%
 
     GUI, Add, Text, X%TexX% ,キー・マウスの入力が無いと判断するまで
-
     GUI, Add, Edit, X%LocX%
     GUI, Add, UpDown, vWaitToShow Range0-10000 X%LocX%, %WaitToShow%
     GUI, Add, Text, X+10, [ms]
@@ -95,21 +95,17 @@ Configuration:
     mes := "キー・マウスの入力が無くなった時に表示する透明度"
     Tr2 := 255 - TransParentRate2
     GUI, Add, Text, X%TexX% Y+30 , %mes%
-
     GUI, Add, Slider, vTr2 Range0-255 X%LocX%, %Tr2%
 
-    if (ChangeHenkan == 1){
-        X:=1
-    }Else{
-        X:=0
-    }
-        GUI, Add, CheckBox, X%TexX% Y+10 vChangeHenkan Checked%X%,「変換」「無変換」キーをIMEの切り替えに使用する
+    GUI, Add, CheckBox, X%TexX% Y+10 vIgnoreMouse Checked%IgnoreMouse%, マウスクリック、ホイール操作を無反応にする
 
-        GUI, Add, Button, W70 X25 Y+20 Default, Ok
-        GUI, Add, Button, W70 X+0, Cancel
-        GUI, Add, Button, W70 X+5, Reset
+    GUI, Add, CheckBox, X%TexX% Y+10 vChangeHenkan Checked%ChangeHenkan%,「変換」「無変換」キーをIMEの切り替えに使用する
 
-    GUI, Show, H310, 設定
+    GUI, Add, Button, W70 X25 Y+20 Default, Ok
+    GUI, Add, Button, W70 X+0, Cancel
+    GUI, Add, Button, W70 X+5, Reset
+
+    GUI, Show, H330, 設定
 
     Return
 
@@ -132,6 +128,7 @@ ButtonOK:
     IniWrite, %TransparentRate%, %IniFile%, ShIme, TransParentRate
     IniWrite, %TransparentRate2%, %IniFile%, ShIme, TransParentRate2
     IniWrite, %ShowTime%, %IniFile%, ShIme, ShowTime
+    IniWrite, %IgnoreMouse%, %IniFile%, ShIme, IgnoreMouse
     IniWrite, %ChangeHenkan%, %IniFile%, ShIme, ChangeHenkan
 
 GuiEscape:
