@@ -46,8 +46,13 @@ IniRead, ShowTime, %IniFile%, ShIme, ShowTime, 500
 
 ; Use "Henkan" and "MuHenkan" keys to change IME state
 IniRead, ChangeHenkan, %IniFile%, ShIme, ChangeHenkan, 1
+IniRead, ShowTimeAtChange, %IniFile%, ShIme, ShowTimeAtChange, 300
 
 IniRead, IgnoreMouse, %IniFile%, ShIme, IgnoreMouse, 0
+
+IniRead,IMEOn, %IniFile%, ShIme, IMEOn,[あ]
+IniRead,IMEOff, %IniFile%, ShIme, IMEOff,[_A]
+MsgBox, %IMEOn% - %IMEOff%
 
 Menu, Tray, NoStandard
 Menu, Tray, Add, %Version%, DoNothing
@@ -115,7 +120,11 @@ ButtonReset:
     TransParentRate := 150
     TransParentRate2 := 50
     ShowTime := 500
+    IgnoreMouse := 1
     ChangeHenkan := 1
+    ShowTimeAtChange := 300
+    IMEOn := "[あ]"
+    IMEOff := "[_A]"
     GUI, Destroy
     ; GoSub Configuration
     Return
@@ -131,6 +140,9 @@ ButtonOK:
     IniWrite, %ShowTime%, %IniFile%, ShIme, ShowTime
     IniWrite, %IgnoreMouse%, %IniFile%, ShIme, IgnoreMouse
     IniWrite, %ChangeHenkan%, %IniFile%, ShIme, ChangeHenkan
+    IniWrite, %ShowTimeAtChange%, %IniFile%, ShIme, ShowTimeAtChange
+    IniWrite, %IMEOn%, %IniFile%, ShIme, IMEOn
+    IniWrite, %IMEOff%, %IniFile%, ShIme, IMEOff
 
 GuiEscape:
 GuiClose:
@@ -142,7 +154,8 @@ ButtonCancel:
 Return
 
 ShowDiag(string, x, y, trans){
-    Progress, B Zh0 FM72 FS72 x%x% y%y% w210 CT000000 CWdddddd, %string%, ,p
+    ;Progress, B Zh0 FM72 FS72 x%x% y%y% w210 CT000000 CWdddddd, %string%, ,p
+    Progress, B Zh0 R0-1000 M72 FS72 x%x% y%y% CT000000 CWdddddd, %string%, ,p
     WinSet, Transparent, %trans%, p
     WinSet, ExStyle, +0x00000020, p
     Return
@@ -164,7 +177,7 @@ ExitShime:
     ExitApp
 
 WinActivateHandler(hWinEventHook, event, hwnd, idObject, idChild, thread, time) {
-    global ShowFlag, ShowTime, TransParentRate
+    global ShowFlag, ShowTime, TransParentRate, IMEOn, IMEOff
     ShowFlag := 0
     SetTimer, TimerShow, %WaitToShow%
 
@@ -179,7 +192,7 @@ WinActivateHandler(hWinEventHook, event, hwnd, idObject, idChild, thread, time) 
     if (IME_CHECK("A") ==0)
     { 
         Progress, Off
-        ShowDiag("[_A]", xPos, yPos, TransParentRate)
+        ShowDiag(IMEOff, xPos, yPos, TransParentRate)
         Sleep, %ShowTime%
         Progress, Off
     }
@@ -187,40 +200,12 @@ WinActivateHandler(hWinEventHook, event, hwnd, idObject, idChild, thread, time) 
     {
         Progress, Off
         ;Tooltip, [あ]
-        ShowDiag("[あ]", xPos, yPos, TransParentRate)
+        ShowDiag(IMEOn, xPos, yPos, TransParentRate)
         Sleep, %ShowTime%
         Progress, Off
     }
 }
 
-ShowIMEState(time) {
-    global ShowFlag, ShowTime, TransParentRate
-    WinGetActiveStats, title, Width, Height, X, Y
-    if(title == ""){
-        Return
-    }
-
-    xPos := X + Width /2-150
-    yPos := Y + Height/2-20
-
-    if (IME_CHECK("A") ==0)
-    { 
-        Progress, Off
-        ;Tooltip, [A]
-        
-        ShowDiag("[あ]", xPos, yPos, TransParentRate)
-        Sleep, %ShowTime%
-        Progress, Off
-    }
-    else
-    {
-        Progress, Off
-        ;Tooltip, [あ]
-        ShowDiag("[あ]", xPos, yPos, TransParentRate)
-        Sleep, %ShowTime%
-        Progress, Off
-    }
-}
 
 ; ; ALT+ESCでIMEのトグル
 ; !ESC::  IME_TOGGLE("A")
@@ -230,7 +215,9 @@ ShowIMEState(time) {
 vk1D:: 
     if (ChangeHenkan == 1){
         IME_OFF("A")
-        ShowIMEState(100)
+        ShowDiag(IMEOff, xPos, yPos, TransParentRate2)
+        Sleep, %ShowTime%
+        Progress, Off
         ShowFlag := 0
         SetTimer, TimerShow, %WaitToShow%
     }
@@ -241,7 +228,9 @@ vk1D::
 vk1C:: 
     if (ChangeHenkan == 1){
         IME_ON("A")
-        ShowIMEState(100)
+        ShowDiag(IMEOn, xPos, yPos, TransParentRate2)
+        Sleep, %ShowTime%
+        Progress, Off
         ShowFlag := 0
         SetTimer, TimerShow, %WaitToShow%
     }
@@ -369,6 +358,7 @@ Shift::
     Return
 
 TimerShow:
+    global IMEOn, IMEOff
     if (ShowFlag == 0){
         WinGetActiveStats, Title, Width, Height, X, Y
         if (title == "") 
@@ -380,12 +370,12 @@ TimerShow:
         if (IME_CHECK("A") == 0 )
         { 
             ;Tooltip, [A]
-            ShowDiag("[_A]", xPos, yPos, TransParentRate2)
+            ShowDiag(IMEOff, xPos, yPos, TransParentRate2)
         }
         else
         {
             ;Tooltip, [あ]
-            ShowDiag("[あ]", xPos, yPos, TransParentRate2)
+            ShowDiag(IMEOn, xPos, yPos, TransParentRate2)
         }
 
         ShowFlag := 1
