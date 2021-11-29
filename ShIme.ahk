@@ -36,23 +36,22 @@ ShowFlag := 1
 SuspendState :=0
 
 ; Hidden time to show [A]/[あ]
-IniRead, WaitToShow, %IniFile%, ShIme , WaitToShow, 2000
+IniRead, WaitToShow,        %IniFile%, ShIme , WaitToShow, 2000
 
-IniRead, TransparentRate, %IniFile%, ShIme, TransParentRate, 150
-IniRead, TransparentRate2, %IniFile%, ShIme, TransParentRate2, 50
+IniRead, TransparentRate,   %IniFile%, ShIme, TransParentRate, 150
+IniRead, TransparentRate2,  %IniFile%, ShIme, TransParentRate2, 50
 
 ; Time to show [A]/[あ]
-IniRead, ShowTime, %IniFile%, ShIme, ShowTime, 500
+IniRead, ShowTime,          %IniFile%, ShIme, ShowTime, 500
 
 ; Use "Henkan" and "MuHenkan" keys to change IME state
-IniRead, ChangeHenkan, %IniFile%, ShIme, ChangeHenkan, 1
-IniRead, ShowTimeAtChange, %IniFile%, ShIme, ShowTimeAtChange, 300
+IniRead, ChangeHenkan,      %IniFile%, ShIme, ChangeHenkan, 1
+IniRead, ShowTimeAtChange,  %IniFile%, ShIme, ShowTimeAtChange, 300
 
-IniRead, IgnoreMouse, %IniFile%, ShIme, IgnoreMouse, 0
+IniRead, IgnoreMouse,       %IniFile%, ShIme, IgnoreMouse, 0
 
-IniRead,IMEOn, %IniFile%, ShIme, IMEOn,[あ]
-IniRead,IMEOff, %IniFile%, ShIme, IMEOff,[_A]
-MsgBox, %IMEOn% - %IMEOff%
+IniRead,IMEOn,              %IniFile%, ShIme, IMEOn,[あ]
+IniRead,IMEOff,             %IniFile%, ShIme, IMEOff,[_A]
 
 Menu, Tray, NoStandard
 Menu, Tray, Add, %Version%, DoNothing
@@ -60,6 +59,12 @@ Menu, Tray, Add, 設定, Configuration
 Menu, Tray, Add, 終了, ExitShime
 
 SetTimer, TimerShow, %WaitToShow%
+
+; Sence mouse moving 
+MouseX :=-1
+MouseY :=-1
+CoordMode,Mouse,Screen
+SetTimer, CheckMouse, 100
 
 ; refer https://sites.google.com/site/agkh6mze/howto/winevent
 myFunc := RegisterCallback("WinActivateHandler")
@@ -116,15 +121,15 @@ Configuration:
     Return
 
 ButtonReset:
-    WaitToShow := 2000
-    TransParentRate := 150
-    TransParentRate2 := 50
-    ShowTime := 500
-    IgnoreMouse := 1
-    ChangeHenkan := 1
-    ShowTimeAtChange := 300
-    IMEOn := "[あ]"
-    IMEOff := "[_A]"
+    WaitToShow          := 2000
+    TransParentRate     := 150
+    TransParentRate2    := 50
+    ShowTime            := 500
+    IgnoreMouse         := 1
+    ChangeHenkan        := 1
+    ShowTimeAtChange    := 300
+    IMEOn               := "[あ]"
+    IMEOff              := "[_A]"
     GUI, Destroy
     ; GoSub Configuration
     Return
@@ -134,15 +139,15 @@ ButtonOK:
     TransParentRate  := 255 - Tr
     TransParentRate2 := 255 - Tr2
 
-    IniWrite, %WaitToShow%, %IniFile%, ShIme, WaitToShow
-    IniWrite, %TransparentRate%, %IniFile%, ShIme, TransParentRate
-    IniWrite, %TransparentRate2%, %IniFile%, ShIme, TransParentRate2
-    IniWrite, %ShowTime%, %IniFile%, ShIme, ShowTime
-    IniWrite, %IgnoreMouse%, %IniFile%, ShIme, IgnoreMouse
-    IniWrite, %ChangeHenkan%, %IniFile%, ShIme, ChangeHenkan
-    IniWrite, %ShowTimeAtChange%, %IniFile%, ShIme, ShowTimeAtChange
-    IniWrite, %IMEOn%, %IniFile%, ShIme, IMEOn
-    IniWrite, %IMEOff%, %IniFile%, ShIme, IMEOff
+    IniWrite, %WaitToShow%,         %IniFile%, ShIme, WaitToShow
+    IniWrite, %TransparentRate%,    %IniFile%, ShIme, TransParentRate
+    IniWrite, %TransparentRate2%,   %IniFile%, ShIme, TransParentRate2
+    IniWrite, %ShowTime%,           %IniFile%, ShIme, ShowTime
+    IniWrite, %IgnoreMouse%,        %IniFile%, ShIme, IgnoreMouse
+    IniWrite, %ChangeHenkan%,       %IniFile%, ShIme, ChangeHenkan
+    IniWrite, %ShowTimeAtChange%,   %IniFile%, ShIme, ShowTimeAtChange
+    IniWrite, %IMEOn%,              %IniFile%, ShIme, IMEOn
+    IniWrite, %IMEOff%,             %IniFile%, ShIme, IMEOff
 
 GuiEscape:
 GuiClose:
@@ -382,3 +387,13 @@ TimerShow:
         Return
     }
 
+CheckMouse:
+    MouseGetPos, X, Y, Win, Control, 0
+    if (MouseX != X) OR (MouseY != Y) {
+        Progress, Off
+        ShowFlag := 0
+        SetTimer, TimerShow, %WaitToShow%
+    }
+    MouseX := X
+    MouseY := Y
+    Return
