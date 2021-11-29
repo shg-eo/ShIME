@@ -46,7 +46,6 @@ IniRead, ShowTime,          %IniFile%, ShIme, ShowTime, 500
 
 ; Use "Henkan" and "MuHenkan" keys to change IME state
 IniRead, ChangeHenkan,      %IniFile%, ShIme, ChangeHenkan, 1
-IniRead, ShowTimeAtChange,  %IniFile%, ShIme, ShowTimeAtChange, 300
 
 IniRead, IgnoreMouse,       %IniFile%, ShIme, IgnoreMouse, 0
 
@@ -127,7 +126,6 @@ ButtonReset:
     ShowTime            := 500
     IgnoreMouse         := 1
     ChangeHenkan        := 1
-    ShowTimeAtChange    := 300
     IMEOn               := "[あ]"
     IMEOff              := "[_A]"
     GUI, Destroy
@@ -145,7 +143,6 @@ ButtonOK:
     IniWrite, %ShowTime%,           %IniFile%, ShIme, ShowTime
     IniWrite, %IgnoreMouse%,        %IniFile%, ShIme, IgnoreMouse
     IniWrite, %ChangeHenkan%,       %IniFile%, ShIme, ChangeHenkan
-    IniWrite, %ShowTimeAtChange%,   %IniFile%, ShIme, ShowTimeAtChange
     IniWrite, %IMEOn%,              %IniFile%, ShIme, IMEOn
     IniWrite, %IMEOff%,             %IniFile%, ShIme, IMEOff
 
