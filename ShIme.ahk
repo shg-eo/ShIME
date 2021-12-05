@@ -16,7 +16,6 @@
 ; IMEの状態を表示する。[A] か [あ]
 
 Version = ShIme Ver 1.0.0.
-DialogTitle = "ShIME_ShIME_ShIME_ShIME"
 
 #Include IME_Func.ahk
 
@@ -158,9 +157,9 @@ Return
 
 ShowDiag(string, x, y, trans){
     ;Progress, B Zh0 FM72 FS72 x%x% y%y% w210 CT000000 CWdddddd, %string%, ,p
-    Progress, B Zh0 R0-1000 M72 FS72 x%x% y%y% CT000000 CWdddddd, %string%, , %DialogTitle%
-    WinSet, Transparent, %trans%, %DialogTitle%
-    WinSet, ExStyle, +0x00000020, %DialogTitle%
+    Progress, B Zh0 R0-1000 M72 FS72 x%x% y%y% CT000000 CWdddddd, %string%, , Shimefoobarfoobar
+    WinSet, Transparent, %trans%, Shimefoobarfoobar
+    WinSet, ExStyle, +0x00000020, Shimefoobarfoobar
     Return
 }
 
